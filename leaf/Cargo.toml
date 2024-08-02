@@ -34,6 +34,18 @@ default-aws-lc = [
     "stat",
 ]
 
+vmess-only = [
+    "config-conf",
+    "inbound-tun",
+    "outbound-tls",
+    "outbound-ws",
+    "outbound-vmess",
+    "outbound-chain",
+    "aws-lc-aead",
+    "rustls-tls",
+    "rustls-tls-aws-lc",
+]
+
 default-openssl = [
     "all-configs",
     "all-endpoints",

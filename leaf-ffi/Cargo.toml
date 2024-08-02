@@ -18,6 +18,10 @@ default-aws-lc= [
     "leaf/default-aws-lc",
 ]
 
+vmess-only = [
+    "leaf/vmess-only",
+]
+
 default-ring = [
     "leaf/default-ring",
 ]
