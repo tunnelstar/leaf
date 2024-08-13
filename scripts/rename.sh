@@ -10,7 +10,7 @@ directory=$(dirname "$(dirname "$script_path")")
 script_name=$(basename "$script_path")
 
 # 改名后的目标
-target="moss"
+target="mosshal"
 
 echo "The working directory (parent of the script directory) is: $directory"
 
