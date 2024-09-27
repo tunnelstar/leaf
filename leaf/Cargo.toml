@@ -27,6 +27,15 @@ default-ring = [
     # "plugin",
 ]
 
+vmess-only = [
+    "config-conf",
+    "all-endpoints",
+    "ring-aead",
+    "rustls-tls",
+    "inbound-tun",
+    "outbound-vmess",
+]
+
 default-openssl = [
     "all-configs",
     "all-endpoints",

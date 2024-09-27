@@ -18,6 +18,10 @@ default-ring = [
     "leaf/default-ring",
 ]
 
+vmess-only = [
+    "leaf/vmess-only",
+]
+
 default-openssl = [
     "leaf/default-openssl",
 ]
