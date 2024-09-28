@@ -29,7 +29,6 @@ default-ring = [
 
 vmess-only = [
     "config-conf",
-    "all-endpoints",
     "ring-aead",
     "rustls-tls",
     "inbound-tun",
