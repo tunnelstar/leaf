@@ -52,29 +52,11 @@ fn to_errno(e: leaf::Error) -> i32 {
 //     }
 // }
 
-#[no_mangle]
-pub extern "C" fn leaf_run(rt_id: u16, config_path: *const c_char) -> i32 {
-    if let Ok(config_path) = unsafe { CStr::from_ptr(config_path).to_str() } {
-        let opts = leaf::StartOptions {
-            config: leaf::Config::File(config_path.to_string()),
-            #[cfg(feature = "auto-reload")]
-            auto_reload: false,
-            runtime_opt: leaf::RuntimeOption::SingleThread,
-        };
-        if let Err(e) = leaf::start(rt_id, opts) {
-            return to_errno(e);
-        }
-        ER_OK
-    } else {
-        ER_CNF_PATH
-    }
-}
-
 // #[no_mangle]
-// pub extern "C" fn leaf_run_with_config_string(rt_id: u16, config: *const c_char) -> i32 {
-//     if let Ok(config) = unsafe { CStr::from_ptr(config).to_str() } {
+// pub extern "C" fn leaf_run(rt_id: u16, config_path: *const c_char) -> i32 {
+//     if let Ok(config_path) = unsafe { CStr::from_ptr(config_path).to_str() } {
 //         let opts = leaf::StartOptions {
-//             config: leaf::Config::Str(config.to_string()),
+//             config: leaf::Config::File(config_path.to_string()),
 //             #[cfg(feature = "auto-reload")]
 //             auto_reload: false,
 //             runtime_opt: leaf::RuntimeOption::SingleThread,
@@ -87,6 +69,24 @@ pub extern "C" fn leaf_run(rt_id: u16, config_path: *const c_char) -> i32 {
 //         ER_CNF_PATH
 //     }
 // }
+
+#[no_mangle]
+pub extern "C" fn leaf_run_with_config_string(rt_id: u16, config: *const c_char) -> i32 {
+    if let Ok(config) = unsafe { CStr::from_ptr(config).to_str() } {
+        let opts = leaf::StartOptions {
+            config: leaf::Config::Str(config.to_string()),
+            #[cfg(feature = "auto-reload")]
+            auto_reload: false,
+            runtime_opt: leaf::RuntimeOption::SingleThread,
+        };
+        if let Err(e) = leaf::start(rt_id, opts) {
+            return to_errno(e);
+        }
+        ER_OK
+    } else {
+        ER_CNF_PATH
+    }
+}
 
 // #[no_mangle]
 // pub extern "C" fn leaf_reload(rt_id: u16) -> i32 {

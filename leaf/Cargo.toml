@@ -37,6 +37,7 @@ default-aws-lc = [
 vmess-only = [
     "config-conf",
     "inbound-tun",
+    "outbound-direct",
     "outbound-tls",
     "outbound-ws",
     "outbound-vmess",
