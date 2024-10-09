@@ -204,8 +204,24 @@ pub struct FailOverOutboundSettings {
     pub fail_timeout: Option<u32>,
     #[serde(rename = "healthCheck")]
     pub health_check: Option<bool>,
+    #[serde(rename = "healthCheckTimeout")]
+    pub health_check_timeout: Option<u32>,
+    #[serde(rename = "healthCheckDelay")]
+    pub health_check_delay: Option<u32>,
+    #[serde(rename = "healthCheckActive")]
+    pub health_check_active: Option<u32>,
+    #[serde(rename = "healthCheckPrefers")]
+    pub health_check_prefers: Option<Vec<String>>,
     #[serde(rename = "checkInterval")]
     pub check_interval: Option<u32>,
+    #[serde(rename = "healthCheckOnStart")]
+    pub health_check_on_start: Option<bool>,
+    #[serde(rename = "healthCheckWait")]
+    pub health_check_wait: Option<bool>,
+    #[serde(rename = "healthCheckAttempts")]
+    pub health_check_attempts: Option<u32>,
+    #[serde(rename = "healthCheckSuccessPercentage")]
+    pub health_check_success_percentage: Option<u32>,
     pub failover: Option<bool>,
     #[serde(rename = "fallbackCache")]
     pub fallback_cache: Option<bool>,
@@ -782,45 +798,31 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                         serde_json::from_str(ext_outbound.settings.as_ref().unwrap().get())
                             .unwrap();
                     if let Some(ext_actors) = ext_settings.actors {
-                        for ext_actor in ext_actors {
-                            settings.actors.push(ext_actor);
-                        }
+                        settings.actors.extend_from_slice(&ext_actors);
                     }
-                    if let Some(ext_fail_timeout) = ext_settings.fail_timeout {
-                        settings.fail_timeout = ext_fail_timeout;
-                    } else {
-                        settings.fail_timeout = 4;
+                    settings.fail_timeout = ext_settings.fail_timeout.unwrap_or(4); // 4 secs
+                    settings.health_check = ext_settings.health_check.unwrap_or(true);
+                    settings.health_check_timeout = ext_settings.health_check_timeout.unwrap_or(6); // 6 secs
+                    settings.health_check_delay = ext_settings.health_check_delay.unwrap_or(200); // 200ms
+                    settings.health_check_active =
+                        ext_settings.health_check_active.unwrap_or(15 * 60); // 15 mins
+                    if let Some(ext_health_check_prefers) = ext_settings.health_check_prefers {
+                        settings
+                            .health_check_prefers
+                            .extend_from_slice(&ext_health_check_prefers);
                     }
-                    if let Some(ext_health_check) = ext_settings.health_check {
-                        settings.health_check = ext_health_check;
-                    } else {
-                        settings.health_check = true;
-                    }
-                    if let Some(ext_check_interval) = ext_settings.check_interval {
-                        settings.check_interval = ext_check_interval;
-                    } else {
-                        settings.check_interval = 300;
-                    }
-                    if let Some(ext_failover) = ext_settings.failover {
-                        settings.failover = ext_failover;
-                    } else {
-                        settings.failover = true;
-                    }
-                    if let Some(ext_fallback_cache) = ext_settings.fallback_cache {
-                        settings.fallback_cache = ext_fallback_cache;
-                    } else {
-                        settings.fallback_cache = false;
-                    }
-                    if let Some(ext_cache_size) = ext_settings.cache_size {
-                        settings.cache_size = ext_cache_size;
-                    } else {
-                        settings.cache_size = 256;
-                    }
-                    if let Some(ext_cache_timeout) = ext_settings.cache_timeout {
-                        settings.cache_timeout = ext_cache_timeout;
-                    } else {
-                        settings.cache_timeout = 60; // in minutes
-                    }
+                    settings.health_check_on_start =
+                        ext_settings.health_check_on_start.unwrap_or(false);
+                    settings.health_check_wait = ext_settings.health_check_wait.unwrap_or(false);
+                    settings.health_check_attempts =
+                        ext_settings.health_check_attempts.unwrap_or(1);
+                    settings.health_check_success_percentage =
+                        ext_settings.health_check_success_percentage.unwrap_or(50);
+                    settings.check_interval = ext_settings.check_interval.unwrap_or(300); // 300 secs
+                    settings.failover = ext_settings.failover.unwrap_or(true);
+                    settings.fallback_cache = ext_settings.fallback_cache.unwrap_or(false);
+                    settings.cache_size = ext_settings.cache_size.unwrap_or(256);
+                    settings.cache_timeout = ext_settings.cache_timeout.unwrap_or(60); // 60 mins
                     let settings = settings.write_to_bytes().unwrap();
                     outbound.settings = settings;
                     outbounds.push(outbound);

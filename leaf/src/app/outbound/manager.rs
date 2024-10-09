@@ -439,15 +439,16 @@ impl OutboundManager {
                         if actors.is_empty() {
                             continue;
                         }
-                        let last_resort = if settings.last_resort.is_empty() {
-                            None
-                        } else {
-                            if let Some(a) = handlers.get(&settings.last_resort) {
-                                Some(a.clone())
+                        let last_resort =
+                            if let Some(last_resort_tag) = settings.last_resort.as_ref() {
+                                if let Some(a) = handlers.get(last_resort_tag) {
+                                    Some(a.clone())
+                                } else {
+                                    None
+                                }
                             } else {
-                                continue 'outbounds;
-                            }
-                        };
+                                None
+                            };
                         let (stream, mut stream_abort_handles) = failover::StreamHandler::new(
                             actors.clone(),
                             settings.fail_timeout,
@@ -461,6 +462,11 @@ impl OutboundManager {
                             settings.health_check_timeout,
                             settings.health_check_delay,
                             settings.health_check_active,
+                            settings.health_check_prefers.clone(),
+                            settings.health_check_on_start,
+                            settings.health_check_wait,
+                            settings.health_check_attempts,
+                            settings.health_check_success_percentage,
                             dns_client.clone(),
                         );
                         let (datagram, mut datagram_abort_handles) = failover::DatagramHandler::new(
@@ -473,6 +479,11 @@ impl OutboundManager {
                             settings.health_check_timeout,
                             settings.health_check_delay,
                             settings.health_check_active,
+                            settings.health_check_prefers,
+                            settings.health_check_on_start,
+                            settings.health_check_wait,
+                            settings.health_check_attempts,
+                            settings.health_check_success_percentage,
                             dns_client.clone(),
                         );
                         let handler = HandlerBuilder::default()
