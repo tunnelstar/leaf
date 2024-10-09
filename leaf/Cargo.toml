@@ -32,6 +32,10 @@ vmess-only = [
     "ring-aead",
     "rustls-tls",
     "inbound-tun",
+    "outbound-direct",
+    "outbound-ws",
+    "outbound-tls",
+    "outbound-chain",
     "outbound-vmess",
 ]
 
