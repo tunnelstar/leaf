@@ -347,7 +347,7 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                             fake_dns_exclude.push(ext_exclude);
                         }
                     }
-                    if fake_dns_exclude.len() > 0 {
+                    if !fake_dns_exclude.is_empty() {
                         settings.fake_dns_exclude = fake_dns_exclude;
                     }
 
@@ -357,7 +357,7 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                             fake_dns_include.push(ext_include);
                         }
                     }
-                    if fake_dns_include.len() > 0 {
+                    if !fake_dns_include.is_empty() {
                         settings.fake_dns_include = fake_dns_include;
                     }
 
@@ -707,7 +707,7 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                                 alpns.push(ext_alpn);
                             }
                         }
-                        if alpns.len() > 0 {
+                        if !alpns.is_empty() {
                             settings.alpn = alpns;
                         }
                         if let Some(ext_certificate) = ext_settings.certificate {
@@ -847,12 +847,12 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
                         }
                     }
                     if let Some(ext_max_accepts) = ext_settings.max_accepts {
-                        settings.max_accepts = ext_max_accepts as u32;
+                        settings.max_accepts = ext_max_accepts;
                     } else {
                         settings.max_accepts = 8;
                     }
                     if let Some(ext_concurrency) = ext_settings.concurrency {
-                        settings.concurrency = ext_concurrency as u32;
+                        settings.concurrency = ext_concurrency;
                     } else {
                         settings.concurrency = 2;
                     }
@@ -1064,7 +1064,7 @@ pub fn to_internal(json: &mut Config) -> Result<internal::Config> {
             }
         }
     }
-    if servers.len() == 0 {
+    if servers.is_empty() {
         servers.push("1.1.1.1".to_string());
     }
     dns.servers = servers;

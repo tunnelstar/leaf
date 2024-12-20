@@ -67,7 +67,7 @@ impl RequestHeader {
         buf.put_u8(self.option);
 
         let padding_len = StdRng::from_entropy().gen_range(0..16) as u8;
-        let security = (padding_len << 4) | self.security as u8;
+        let security = (padding_len << 4) | self.security;
 
         buf.put_u8(security);
         buf.put_u8(0);
@@ -98,10 +98,10 @@ impl RequestHeader {
         let mut tmp = [0u8; 8];
         BigEndian::write_u64(&mut tmp, timestamp as u64);
         let mut hasher = Md5::new();
-        hasher.update(&tmp);
-        hasher.update(&tmp);
-        hasher.update(&tmp);
-        hasher.update(&tmp);
+        hasher.update(tmp);
+        hasher.update(tmp);
+        hasher.update(tmp);
+        hasher.update(tmp);
         let iv = hasher.finalize();
 
         // key for header ecnryption
@@ -132,7 +132,6 @@ impl ClientSession {
     pub fn new() -> Self {
         let mut request_body_key = vec![0u8; 16];
         let mut request_body_iv = vec![0u8; 16];
-        let response_header: u8;
 
         // fill random bytes
         let mut rand_bytes = BytesMut::with_capacity(16 + 16 + 1);
@@ -141,9 +140,9 @@ impl ClientSession {
         for i in 0..rand_bytes.len() {
             rand_bytes[i] = rng.gen();
         }
-        (&mut request_body_key[..]).copy_from_slice(&rand_bytes[..16]);
-        (&mut request_body_iv[..]).copy_from_slice(&rand_bytes[16..32]);
-        response_header = rand_bytes[32];
+        request_body_key[..].copy_from_slice(&rand_bytes[..16]);
+        request_body_iv[..].copy_from_slice(&rand_bytes[16..32]);
+        let response_header: u8 = rand_bytes[32];
 
         let response_body_key = Md5::digest(&request_body_key).to_vec();
         let response_body_iv = Md5::digest(&request_body_iv).to_vec();

@@ -407,7 +407,7 @@ pub async fn connect_datagram_outbound(
             Network::Udp => {
                 let socket = match addr.parse::<IpAddr>() {
                     Ok(ip) if ip.is_loopback() => new_udp_socket(&SocketAddr::new(ip, 0)).await?,
-                    _ => new_udp_socket(&*crate::option::UNSPECIFIED_BIND_ADDR).await?,
+                    _ => new_udp_socket(&crate::option::UNSPECIFIED_BIND_ADDR).await?,
                 };
                 Ok(Some(OutboundTransport::Datagram(Box::new(
                     DomainResolveOutboundDatagram::new(socket, dns_client.clone()),
@@ -420,11 +420,11 @@ pub async fn connect_datagram_outbound(
         },
         OutboundConnect::Direct => match &sess.destination {
             SocksAddr::Domain(domain, port) => {
-                let socket = new_udp_socket(&*crate::option::UNSPECIFIED_BIND_ADDR).await?;
+                let socket = new_udp_socket(&crate::option::UNSPECIFIED_BIND_ADDR).await?;
                 Ok(Some(OutboundTransport::Datagram(Box::new(
                     DomainAssociatedOutboundDatagram::new(
                         socket,
-                        sess.source.clone(),
+                        sess.source,
                         SocksAddr::Domain(domain.to_owned(), port.to_owned()),
                         dns_client.clone(),
                     ),

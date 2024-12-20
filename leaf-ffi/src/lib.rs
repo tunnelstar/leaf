@@ -23,53 +23,6 @@ fn to_errno(e: leaf::Error) -> i32 {
     }
 }
 
-// #[no_mangle]
-// pub extern "C" fn leaf_run_with_options(
-//     rt_id: u16,
-//     config_path: *const c_char,
-//     auto_reload: bool, // requires this parameter anyway
-//     multi_thread: bool,
-//     auto_threads: bool,
-//     threads: i32,
-//     stack_size: i32,
-// ) -> i32 {
-//     if let Ok(config_path) = unsafe { CStr::from_ptr(config_path).to_str() } {
-//         if let Err(e) = leaf::util::run_with_options(
-//             rt_id,
-//             config_path.to_string(),
-//             #[cfg(feature = "auto-reload")]
-//             auto_reload,
-//             multi_thread,
-//             auto_threads,
-//             threads as usize,
-//             stack_size as usize,
-//         ) {
-//             return to_errno(e);
-//         }
-//         ER_OK
-//     } else {
-//         ER_CNF_PATH
-//     }
-// }
-
-// #[no_mangle]
-// pub extern "C" fn leaf_run(rt_id: u16, config_path: *const c_char) -> i32 {
-//     if let Ok(config_path) = unsafe { CStr::from_ptr(config_path).to_str() } {
-//         let opts = leaf::StartOptions {
-//             config: leaf::Config::File(config_path.to_string()),
-//             #[cfg(feature = "auto-reload")]
-//             auto_reload: false,
-//             runtime_opt: leaf::RuntimeOption::SingleThread,
-//         };
-//         if let Err(e) = leaf::start(rt_id, opts) {
-//             return to_errno(e);
-//         }
-//         ER_OK
-//     } else {
-//         ER_CNF_PATH
-//     }
-// }
-
 #[no_mangle]
 pub extern "C" fn leaf_run_with_config_string(rt_id: u16, config: *const c_char) -> i32 {
     if let Ok(config) = unsafe { CStr::from_ptr(config).to_str() } {
@@ -88,27 +41,7 @@ pub extern "C" fn leaf_run_with_config_string(rt_id: u16, config: *const c_char)
     }
 }
 
-// #[no_mangle]
-// pub extern "C" fn leaf_reload(rt_id: u16) -> i32 {
-//     if let Err(e) = leaf::reload(rt_id) {
-//         return to_errno(e);
-//     }
-//     ER_OK
-// }
-
 #[no_mangle]
 pub extern "C" fn leaf_shutdown(rt_id: u16) -> bool {
     leaf::shutdown(rt_id)
 }
-
-// #[no_mangle]
-// pub extern "C" fn leaf_test_config(config_path: *const c_char) -> i32 {
-//     if let Ok(config_path) = unsafe { CStr::from_ptr(config_path).to_str() } {
-//         if let Err(e) = leaf::test_config(&config_path) {
-//             return to_errno(e);
-//         }
-//         ER_OK
-//     } else {
-//         ER_CNF_PATH
-//     }
-// }

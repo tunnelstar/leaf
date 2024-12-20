@@ -1,10 +1,10 @@
-pub mod stream;
 pub mod datagram;
+pub mod stream;
 
-pub use stream::Handler as StreamHandler;
 pub use datagram::Handler as DatagramHandler;
+pub use stream::Handler as StreamHandler;
 
-pub(self) enum Method {
+enum Method {
     Random,
     RandomOnce,
     RoundRobin,

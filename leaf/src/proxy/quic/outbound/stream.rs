@@ -39,7 +39,7 @@ impl Manager {
             match fs::read(cert_path) {
                 Ok(cert) => {
                     match Path::new(&cert_path).extension().map(|ext| ext.to_str()) {
-                        Some(Some(ext)) if ext == "der" => {
+                        Some(Some("der")) => {
                             roots.add(&rustls::Certificate(cert)).unwrap(); // FIXME
                         }
                         _ => {
@@ -120,7 +120,7 @@ impl Manager {
 
         // FIXME A better indicator.
         let socket = self
-            .new_udp_socket(&*crate::option::UNSPECIFIED_BIND_ADDR)
+            .new_udp_socket(&crate::option::UNSPECIFIED_BIND_ADDR)
             .await?;
         let mut endpoint = quinn::Endpoint::new(
             quinn::EndpointConfig::default(),
