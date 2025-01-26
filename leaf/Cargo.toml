@@ -42,6 +42,7 @@ vmess-only = [
     "outbound-ws",
     "outbound-vmess",
     "outbound-chain",
+    "outbound-failover",
     "aws-lc-aead",
     "rustls-tls",
     "rustls-tls-aws-lc",
