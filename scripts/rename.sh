@@ -6,6 +6,10 @@ script_path=$(realpath "$0")
 # 设置 directory 为脚本所在目录的上级目录
 directory=$(dirname "$(dirname "$script_path")")
 
+# 移出 target 目录
+
+[[ -d $directory/target ]] && rm -fr $directory/target
+
 # 获取脚本文件的名称
 script_name=$(basename "$script_path")
 
